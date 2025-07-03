@@ -121,11 +121,138 @@ select top 1 ship_mode,
 group by ship_mode
 order by total_shipping_cost desc;
 ```
+![Screenshot (84)](https://github.com/user-attachments/assets/75941083-d968-4665-8e8c-b6a135143eff)
+
 ---
+6. Who are the most valuable customers, and what products or services do they typically purchase?
+```sql
+select top 10 Customer_Name,
+sum (sales) as total_sales
+from [KMS Sql Case Study]
+group by Customer_Name
+order by total_sales desc;
 ```
+![Screenshot (85)](https://github.com/user-attachments/assets/b1c80b95-0b43-47be-9042-13be0319faec)
+
+Product they typically Purchase
+```sql
+select customer_name, product_category, Product_Name,Product_Sub_Category,
+    sum(sales) as product_sales
+from [Kms sql case study]
+where Customer_Name in (
+        select top 10 Customer_Name
+        from [Kms sql case study]
+        group by Customer_Name
+        order by sum(sales) desc)
+group by
+    Customer_Name,Product_Category,Product_Name,Product_Sub_Category
+order by 
+    Customer_Name, product_sales desc;
 ```
+---
+7.Which small business customer had the highest sales?
+```sql
+	SELECT TOP 1
+    Customer_Name,
+    SUM(Sales) AS Total_Sales
+FROM 
+    [KMS Sql Case Study]
+WHERE 
+    Customer_Segment = 'Small Business'
+GROUP BY 
+    Customer_Name
+ORDER BY 
+    Total_Sales DESC;
 ```
+![Screenshot (88)](https://github.com/user-attachments/assets/5a9eef31-ad9d-43d1-9fa9-b22161694491)
+
+---
+8. Which Corporate Customer placed the most number of orders in 2009 – 2012?
+```sql
+	SELECT TOP 1
+    Customer_Name,
+    COUNT(DISTINCT Order_ID) AS Number_Of_Orders
+FROM 
+    [KMS Sql Case Study]
+WHERE 
+    Customer_Segment = 'Corporate'
+    AND Order_Date BETWEEN '2009-01-01' AND '2012-12-31'
+GROUP BY 
+    Customer_Name
+ORDER BY 
+    Number_Of_Orders DESC;
 ```
+![Screenshot (89)](https://github.com/user-attachments/assets/000d1d88-cf08-4edc-b528-08203b6f62f8)
+
+---
+9. Which consumer customer was the most profitable one?
+```sql
+	SELECT TOP 1
+    Customer_Name,
+    SUM(Profit) AS Total_Profit
+FROM 
+    [KMS Sql Case Study]
+WHERE 
+    Customer_Segment = 'Consumer'
+GROUP BY 
+    Customer_Name
+ORDER BY 
+    Total_Profit DESC;
 ```
+![Screenshot (90)](https://github.com/user-attachments/assets/37a23a77-2fb7-44ee-acdf-1d92aabf8e37)
+
+---
+10. Which customer returned items, and what segment do they belong to?
+
+ Import another Table named Order Status 
+```sql
+	select k.Customer_Name, 
+	       k.Customer_Segment
+		   from [KMS Sql Case Study] k
+		   join [Order_Status] o on k.Order_ID = o.Order_ID
+		   where o.Status ='Returned'
+		   group by k.Customer_Name, k.Customer_Segment;
 ```
+![Screenshot (91)](https://github.com/user-attachments/assets/5e74a27e-c66e-4961-8531-ba237f35a865)
+
+---
+11. If the delivery truck is the most economical but the slowest shipping method and Express Air is the fastest but the most expensive one, do you think the company appropriately spent shipping costs based on the Order Priority?
+
+To answer that, I first analyzed average Shipping Cost by Shipping Mode and Order Priority
+ ```sql
+    	SELECT 
+    Order_Priority,
+    Ship_Mode,
+    COUNT(DISTINCT Order_ID) AS Number_Of_Orders,
+    AVG(Shipping_Cost) AS Avg_Shipping_Cost
+FROM 
+    [KMS Sql Case Study]
+GROUP BY 
+    Order_Priority, Ship_Mode
+ORDER BY 
+    Order_Priority, Ship_Mode;
+```
+![Screenshot (93)](https://github.com/user-attachments/assets/1f85c480-65d5-4fff-a5ea-3394f3903be6)
+
+---
+### Insight
+
+KMS appears to be:
+
+* Using Express Air for 33% Critical orders.
+* However, 33% of Low priority orders were also shipped using Express Air, which may be inflating costs unnecessarily.
+* High priority orders and Crititcal priority orders shipped by Delivery Truck is about 33% and  could result in delays that hurt customer satisfaction.
+---
+
+### Recommendation
+* Match Order Priority to appropriate shipping modes.
+* Set guardrails in the order system to prevent low-priority orders from using Express Air.
+* Consider incentives for customers to choose economy shipping when urgency is low.
+
+	
+
+
+
+
+
 
