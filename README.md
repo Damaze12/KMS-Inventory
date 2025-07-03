@@ -239,9 +239,9 @@ ORDER BY
 
 KMS appears to be:
 
-* Using Express Air for 33% Critical orders.
-* However, 33% of Low priority orders were also shipped using Express Air, which may be inflating costs unnecessarily.
-* High priority orders and Crititcal priority orders shipped by Delivery Truck is about 33% and  could result in delays that hurt customer satisfaction.
+* Using Express Air for 190 Critical orders.
+* However, 180 of Low priority orders were also shipped using Express Air, which may be inflating costs unnecessarily.
+* High priority orders and Crititcal priority orders shipped by Delivery Truck is high and  could result in delays that hurt customer satisfaction.
 ---
 
 ### Recommendation
